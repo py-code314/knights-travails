@@ -11,36 +11,36 @@ function generateAdjacencyList(startNode) {
   let currentNode = startNode
 }
 
+// Array of move functions
+const moveFunctions = [
+  moveUpOneLeftTwoOrLeftTwoUpOne,
+  moveUpOneRightTwoOrRightTwoUpOne,
+  moveUpTwoLeftOneOrLeftOneUpTwo,
+  moveUpTwoRightOneOrRightOneUpTwo,
+  moveRightOneDownTwoOrDownTwoRightOne,
+  moveRightTwoDownOneOrDownOneRightTwo,
+  moveDownOneLeftTwoOrLeftTwoDownOne,
+  moveDownTwoLeftOneOrLeftOneDownTwo,
+]
+
 // Generate neighbors bases on the current node
 function generateNeighbors(currentNode) {
-  // const [first, second] = currentNode
-  // console.log(first, second)
-  let first = currentNode[0]
-  let second = currentNode[1]
+  const first = currentNode[0]
+  const second = currentNode[1]
 
   const neighbors = []
-  while (first >= 0 && first <= 7 && second >= 0 && second <= 7) {
-    moveTopOneLeftTwo(first, second)
-    // const firstNewFirst = first + 1
-    // first = firstNewFirst
-    // const firstNewSecond = second + 2
-    // second = firstNewSecond
 
-    // if ((first >= 0 && first <= 7) && (second >= 0 && second <= 7)) {
-    //   const firstNeighbor = [firstNewFirst, firstNewSecond]
-    //   console.log('Neighbor:', firstNeighbor)
-    //   neighbors.push(firstNeighbor)
-    // }
+  moveFunctions.forEach(func => {
+    const neighbor = func(first, second)
+    console.log(neighbor)
+    
+    if (neighbor) {
+      neighbors.push(neighbor)
+    }
+  })
 
-    // const secondNewFirst = first + 2
-    // first = secondNewFirst
-    // const secondNewSecond = second + 1
-    // second = secondNewSecond
-    // const secondNeighbor = [secondNewFirst, secondNewSecond]
-    // console.log('Neighbor:', secondNeighbor)
-    // neighbors.push(secondNeighbor)
-  }
   console.log('Neighbors:', neighbors)
+  return neighbors
 }
 
 // Move knight one step up, two steps left or two steps left, one step up
@@ -50,7 +50,8 @@ function moveUpOneLeftTwoOrLeftTwoUpOne(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    console.log('Neighbor:', neighbor)
+    // console.log('Neighbor:', neighbor)
+    return neighbor
   }
 }
 
@@ -61,7 +62,8 @@ function moveUpOneRightTwoOrRightTwoUpOne(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    console.log('Neighbor:', neighbor)
+    // console.log('Neighbor:', neighbor)
+    return neighbor
   }
 }
 
@@ -72,7 +74,8 @@ function moveUpTwoLeftOneOrLeftOneUpTwo(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    console.log('Neighbor:', neighbor)
+    // console.log('Neighbor:', neighbor)
+    return neighbor
   }
 }
 
@@ -83,7 +86,8 @@ function moveUpTwoRightOneOrRightOneUpTwo(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    console.log('Neighbor:', neighbor)
+    // console.log('Neighbor:', neighbor)
+    return neighbor
   }
 }
 
@@ -94,7 +98,8 @@ function moveRightOneDownTwoOrDownTwoRightOne(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    console.log('Neighbor:', neighbor)
+    // console.log('Neighbor:', neighbor)
+    return neighbor
   }
 }
 
@@ -105,7 +110,8 @@ function moveRightTwoDownOneOrDownOneRightTwo(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    console.log('Neighbor:', neighbor)
+    // console.log('Neighbor:', neighbor)
+    return neighbor
   }
 }
 
@@ -116,7 +122,8 @@ function moveDownOneLeftTwoOrLeftTwoDownOne(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    console.log('Neighbor:', neighbor)
+    // console.log('Neighbor:', neighbor)
+    return neighbor
   }
 }
 
@@ -127,15 +134,10 @@ function moveDownTwoLeftOneOrLeftOneDownTwo(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    console.log('Neighbor:', neighbor)
+    // console.log('Neighbor:', neighbor)
+    return neighbor
   }
 }
 
-moveUpOneLeftTwoOrLeftTwoUpOne(4, 4)
-moveUpOneRightTwoOrRightTwoUpOne(4, 4)
-moveUpTwoLeftOneOrLeftOneUpTwo(4, 4)
-moveUpTwoRightOneOrRightOneUpTwo(4, 4)
-moveRightOneDownTwoOrDownTwoRightOne(4, 4)
-moveRightTwoDownOneOrDownOneRightTwo(4, 4)
-moveDownOneLeftTwoOrLeftTwoDownOne(4, 4)
-moveDownTwoLeftOneOrLeftOneDownTwo(4, 4)
+
+generateNeighbors([7, 7])
