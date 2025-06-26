@@ -1,14 +1,55 @@
+const util = require('util')
+
 function knightMoves(startNode) {
   const adjacencyList = generateAdjacencyList(startNode)
-  console.log(adjacencyList)
+  // console.log(adjacencyList)
+}
+
+// Check if two arrays are equal
+function arraysEqual(array1, array2) {
+  return (
+    Array.isArray(array1) &&
+    Array.isArray(array2) &&
+    array1.length === array2.length &&
+    array1.every((value, index) => value === array2[index])
+  )
 }
 
 // Generate adjacency list based on the start node
 function generateAdjacencyList(startNode) {
-  // console.log('hello')
   const adjacencyList = {}
 
-  let currentNode = startNode
+  let queue = [startNode]
+  // console.log(queue)
+
+  const visitedNodes = [startNode]
+
+  while (queue.length) {
+    let currentNode = queue.shift()
+    // console.log('current: ', currentNode)
+
+    const neighbors = generateNeighbors(currentNode)
+    // console.log('neighbors:', neighbors)
+
+    adjacencyList[`[${currentNode}]`] = neighbors
+
+    neighbors.forEach((neighbor) => {
+      if (!visitedNodes.some((node) => arraysEqual(node, neighbor))) {
+        queue.push(neighbor)
+        // console.log('queue:', util.inspect(queue, { maxArrayLength: null }))
+
+        visitedNodes.push(neighbor)
+        // console.log(
+        //   'visited:',
+        //   util.inspect(visitedNodes, { maxArrayLength: null })
+        // )
+      }
+    })
+
+    
+  }
+  console.log(adjacencyList)
+  console.log(Object.keys(adjacencyList).length)
 }
 
 // Array of move functions
@@ -30,16 +71,16 @@ function generateNeighbors(currentNode) {
 
   const neighbors = []
 
-  moveFunctions.forEach(func => {
+  moveFunctions.forEach((func) => {
     const neighbor = func(first, second)
-    console.log(neighbor)
-    
+    // console.log(neighbor)
+
     if (neighbor) {
       neighbors.push(neighbor)
     }
   })
 
-  console.log('Neighbors:', neighbors)
+  // console.log('Neighbors:', neighbors)
   return neighbors
 }
 
@@ -139,5 +180,4 @@ function moveDownTwoLeftOneOrLeftOneDownTwo(first, second) {
   }
 }
 
-
-generateNeighbors([7, 7])
+generateAdjacencyList([3, 3])
