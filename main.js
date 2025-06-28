@@ -1,8 +1,61 @@
-const util = require('util')
+// const util = require('util')
 
-function knightMoves(startNode) {
-  const adjacencyList = generateAdjacencyList(startNode)
-  // console.log(adjacencyList)
+function knightMoves(startNode, endNode) {
+  // Get adjacency list
+  const nextMoves = generateAdjacencyList(startNode)
+  // const nextMovesLength = Object.keys(nextMoves).length
+
+  const nodesInfo = {}
+
+  // Populate nodes info with initial null values
+  for (let nextMove in nextMoves) {
+    nodesInfo[`${nextMove}`] = { distance: null, previous: null }
+  }
+
+  // Set start node's distance to 0
+  nodesInfo[`[${startNode}]`].distance = 0
+
+  const queue = [startNode]
+  const path = [endNode]
+
+  // Do BFS and update nodesInfo values
+  updateNodesInfo(queue, nextMoves, nodesInfo)
+
+  // Loop through nodesInfo
+  for (let node in nodesInfo) {
+    const nodeArray = JSON.parse(node)
+    if (arraysEqual(nodeArray, endNode)) {
+      let current = nodeArray
+      current = JSON.stringify(current)
+
+      // Push all intermediate nodes to the path
+      while (nodesInfo[current].previous) {
+        path.push(nodesInfo[current].previous)
+        current = nodesInfo[current].previous
+        current = JSON.stringify(current)
+      }
+    }
+  }
+
+  console.log('Path:', path.reverse())
+}
+
+function updateNodesInfo(queue, nextMoves, nodesInfo) {
+  while (queue.length) {
+    const currentNode = queue.shift()
+    const size = nextMoves[`[${currentNode}]`].length
+
+    for (let i = 0; i < size; i++) {
+      const nextNode = nextMoves[`[${currentNode}]`][i]
+
+      if (nodesInfo[`[${nextNode}]`].distance === null) {
+        nodesInfo[`[${nextNode}]`].distance =
+          nodesInfo[`[${currentNode}]`].distance + 1
+        nodesInfo[`[${nextNode}]`].previous = currentNode
+        queue.push(nextNode)
+      }
+    }
+  }
 }
 
 // Check if two arrays are equal
@@ -20,36 +73,25 @@ function generateAdjacencyList(startNode) {
   const adjacencyList = {}
 
   let queue = [startNode]
-  // console.log(queue)
 
   const visitedNodes = [startNode]
 
   while (queue.length) {
     let currentNode = queue.shift()
-    // console.log('current: ', currentNode)
 
     const neighbors = generateNeighbors(currentNode)
-    // console.log('neighbors:', neighbors)
 
     adjacencyList[`[${currentNode}]`] = neighbors
 
     neighbors.forEach((neighbor) => {
       if (!visitedNodes.some((node) => arraysEqual(node, neighbor))) {
         queue.push(neighbor)
-        // console.log('queue:', util.inspect(queue, { maxArrayLength: null }))
 
         visitedNodes.push(neighbor)
-        // console.log(
-        //   'visited:',
-        //   util.inspect(visitedNodes, { maxArrayLength: null })
-        // )
       }
     })
-
-    
   }
-  console.log(adjacencyList)
-  console.log(Object.keys(adjacencyList).length)
+  return adjacencyList
 }
 
 // Array of move functions
@@ -73,14 +115,12 @@ function generateNeighbors(currentNode) {
 
   moveFunctions.forEach((func) => {
     const neighbor = func(first, second)
-    // console.log(neighbor)
 
     if (neighbor) {
       neighbors.push(neighbor)
     }
   })
 
-  // console.log('Neighbors:', neighbors)
   return neighbors
 }
 
@@ -91,7 +131,6 @@ function moveUpOneLeftTwoOrLeftTwoUpOne(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    // console.log('Neighbor:', neighbor)
     return neighbor
   }
 }
@@ -103,7 +142,6 @@ function moveUpOneRightTwoOrRightTwoUpOne(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    // console.log('Neighbor:', neighbor)
     return neighbor
   }
 }
@@ -115,7 +153,6 @@ function moveUpTwoLeftOneOrLeftOneUpTwo(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    // console.log('Neighbor:', neighbor)
     return neighbor
   }
 }
@@ -127,7 +164,6 @@ function moveUpTwoRightOneOrRightOneUpTwo(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    // console.log('Neighbor:', neighbor)
     return neighbor
   }
 }
@@ -139,7 +175,6 @@ function moveRightOneDownTwoOrDownTwoRightOne(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    // console.log('Neighbor:', neighbor)
     return neighbor
   }
 }
@@ -151,7 +186,6 @@ function moveRightTwoDownOneOrDownOneRightTwo(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    // console.log('Neighbor:', neighbor)
     return neighbor
   }
 }
@@ -163,7 +197,6 @@ function moveDownOneLeftTwoOrLeftTwoDownOne(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    // console.log('Neighbor:', neighbor)
     return neighbor
   }
 }
@@ -175,9 +208,9 @@ function moveDownTwoLeftOneOrLeftOneDownTwo(first, second) {
 
   if (nextFirst >= 0 && nextFirst <= 7 && nextSecond >= 0 && nextSecond <= 7) {
     const neighbor = [nextFirst, nextSecond]
-    // console.log('Neighbor:', neighbor)
     return neighbor
   }
 }
 
-generateAdjacencyList([3, 3])
+// generateAdjacencyList([3, 3])
+knightMoves([0, 0], [4, 4])
