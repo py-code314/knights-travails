@@ -1,91 +1,83 @@
-
-function knightMoves(startNode, endNode) {
-  // Get adjacency list
-  const nextMoves = generateAdjacencyList(startNode)
-  // const nextMovesLength = Object.keys(nextMoves).length
-
-  const nodesInfo = {}
+function knightMoves(start, end) {
+  const adjacencyList = generateAdjacencyList(start);
+  const nodesInfo = {};
 
   // Populate nodes info with initial null values
-  for (let nextMove in nextMoves) {
-    nodesInfo[`${nextMove}`] = { distance: null, previous: null }
-  }
+  Object.keys(adjacencyList).forEach((node) => {
+    nodesInfo[node] = { distance: null, previousNode: null };
+  });
 
   // Set start node's distance to 0
-  nodesInfo[`[${startNode}]`].distance = 0
+  nodesInfo[JSON.stringify(start)].distance = 0;
 
-  const queue = [startNode]
-  const path = [endNode]
+  const queue = [start];
+  const path = [end];
 
   // Do BFS and update nodesInfo values
-  updateNodesInfo(queue, nextMoves, nodesInfo)
+  updateNodesInfo(queue, adjacencyList, nodesInfo);
 
   // Loop through nodesInfo
-  for (let node in nodesInfo) {
-    const nodeArray = JSON.parse(node)
-    if (arraysEqual(nodeArray, endNode)) {
-      let current = nodeArray
-      current = JSON.stringify(current)
+  Object.keys(nodesInfo).forEach((node) => {
+    const nodeArray = JSON.parse(node);
+    if (arraysAreEqual(nodeArray, end)) {
+      let current = nodeArray;
 
       // Push all intermediate nodes to the path
-      while (nodesInfo[current].previous) {
-        path.push(nodesInfo[current].previous)
-        current = nodesInfo[current].previous
-        current = JSON.stringify(current)
+      while (nodesInfo[JSON.stringify(current)].previousNode) {
+        path.push(nodesInfo[JSON.stringify(current)].previousNode);
+        current = nodesInfo[JSON.stringify(current)].previousNode;
       }
     }
-  }
+  });
 
-  return path.reverse()
+  return path.reverse();
 }
 
-function updateNodesInfo(queue, nextMoves, nodesInfo) {
-  while (queue.length) {
-    const currentNode = queue.shift()
-    const size = nextMoves[`[${currentNode}]`].length
 
-    for (let i = 0; i < size; i++) {
-      const nextNode = nextMoves[`[${currentNode}]`][i]
 
-      if (nodesInfo[`[${nextNode}]`].distance === null) {
-        nodesInfo[`[${nextNode}]`].distance =
-          nodesInfo[`[${currentNode}]`].distance + 1
-        nodesInfo[`[${nextNode}]`].previous = currentNode
-        queue.push(nextNode)
+function updateNodesInfo(queue, adjacencyList, nodeData) {
+  while (queue.length > 0) {
+    const currentNode = queue.shift();
+    const neighbors = adjacencyList[`[${currentNode}]`];
+
+    neighbors.forEach((neighbor) => {
+      if (nodeData[`[${neighbor}]`].distance === null) {
+        nodeData[`[${neighbor}]`].distance = nodeData[`[${currentNode}]`].distance + 1;
+        nodeData[`[${neighbor}]`].previousNode = currentNode;
+        queue.push(neighbor);
       }
-    }
+    });
   }
 }
 
 // Check if two arrays are equal
-function arraysEqual(array1, array2) {
-  return (
-    Array.isArray(array1) &&
-    Array.isArray(array2) &&
-    array1.length === array2.length &&
-    array1.every((value, index) => value === array2[index])
-  )
+function arraysAreEqual(array1, array2) {
+  if (!Array.isArray(array1) || !Array.isArray(array2)) {
+    return false
+  }
+
+  if (array1.length !== array2.length) {
+    return false
+  }
+
+  return array1.every((value, index) => value === array2[index])
 }
 
 // Generate adjacency list based on the start node
 function generateAdjacencyList(startNode) {
   const adjacencyList = {}
-
-  let queue = [startNode]
-
+  const queue = [startNode]
   const visitedNodes = [startNode]
 
   while (queue.length) {
     let currentNode = queue.shift()
-
     const neighbors = generateNeighbors(currentNode)
 
     adjacencyList[`[${currentNode}]`] = neighbors
 
     neighbors.forEach((neighbor) => {
-      if (!visitedNodes.some((node) => arraysEqual(node, neighbor))) {
+      if (!visitedNodes.some((node) => arraysAreEqual(node, neighbor))) {
         queue.push(neighbor)
-
         visitedNodes.push(neighbor)
       }
     })
@@ -93,15 +85,10 @@ function generateAdjacencyList(startNode) {
   return adjacencyList
 }
 
-
-// Generate neighbors bases on the current node
 function generateNeighbors(currentNode) {
-  const first = currentNode[0]
-  const second = currentNode[1]
-
+  const [x, y] = currentNode
   const neighbors = []
-
-  const addValues = [
+  const moves = [
     [1, -2],
     [1, 2],
     [2, -1],
@@ -112,27 +99,18 @@ function generateNeighbors(currentNode) {
     [-2, -1],
   ]
 
-  addValues.forEach((values) => {
-    const nextFirst = first + values[0]
-    const nextSecond = second + values[1]
+  moves.forEach(([item1, item2]) => {
+    const newX = x + item1
+    const newY = y + item2
 
-    if (
-      nextFirst >= 0 &&
-      nextFirst <= 7 &&
-      nextSecond >= 0 &&
-      nextSecond <= 7
-    ) {
-      const neighbor = [nextFirst, nextSecond]
-      neighbors.push(neighbor)
+    if (newX >= 0 && newX <= 7 && newY >= 0 && newY <= 7) {
+      neighbors.push([newX, newY])
     }
   })
 
   return neighbors
 }
 
-
-// knightMoves([0, 0], [4, 4])
 console.log(knightMoves([0, 0], [3, 3]))
 console.log(knightMoves([3, 3], [0, 0]))
 console.log(knightMoves([0, 0], [7, 7]))
-// knightMoves([0, 0], [4, 4])
